@@ -2,6 +2,7 @@
 __pycache__/
 .pytest_cache/
 data/processed/
-reports/
-audit.jsonl
+# reports/ is tracked: metrics.json and audit.jsonl are deliverables.
+# Root-level only, so reports/audit.jsonl is not caught by this pattern.
+/audit.jsonl
 .claude/settings.local.json
