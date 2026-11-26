@@ -145,3 +145,16 @@ Exercise 4: ridge validation R^2 0.6675, about the same as untransformed)
 and re-checked on fresh data.
 
 ## Attribution
+
+**Model:** Claude Opus 5.5 (`claude-opus-5-5`, Anthropic; size not published),
+used through Claude Code. `agent/audit.py` ran on `qwen3.5:9b` via Ollama
+(64k context); no other model switch.
+
+**Agent-generated:** the code and tests added to the starter, the pipeline
+checks (raw-data hash check, Stop hook, `/seed-fault` skill), `src/compare.py`,
+the docs, and the first draft of this report.
+
+**My decisions** (each recorded in `docs/DECISIONS.md`): what to predict, what
+counts as leakage, the temporal split, the two baselines, keeping
+`weather_severity_lag_1`, and which results are believable (rejecting
+R^2 = 1.000, and the Exercise 4 and 5 conclusions).
