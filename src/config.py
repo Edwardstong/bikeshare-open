@@ -45,6 +45,39 @@ UNVERIFIED_COLS = {"cnt_2d_bfr"}
 # What feature_columns() and the tests actually enforce.
 FORBIDDEN = LEAKAGE_COLS | TIME_INDEX_COLS | UNVERIFIED_COLS
 
+# --- Every other raw column, classified --------------------------------
+# FORBIDDEN is a denylist: a column nobody thought to forbid enters the
+# model silently. So every raw column must also appear in exactly one of
+# the sets below, and tests/ fail on any column that does not
+# (test_every_raw_column_is_classified) or on a model input nobody
+# declared (test_feature_set_is_declared).
+
+DATE_COL = "dteday"
+
+# Raw numeric columns used as features unchanged. Same-day weather is
+# treated as known to a forecaster (a weather forecast), as in the starter.
+RAW_FEATURE_COLS = {"temp", "atemp", "hum", "windspeed"}
+
+# Raw label columns that src/features.py re-encodes; the raw string never
+# reaches the model (holiday -> is_holiday, workday -> is_workday,
+# weather -> weather_severity and weather_severity_lag_1).
+ENCODED_COLS = {"holiday", "workday", "weather"}
+
+# Raw label columns not used: dayofweek, month_sin and month_cos are
+# derived from dteday instead, so these would only duplicate them.
+REDUNDANT_LABEL_COLS = {"season", "mnth", "weekday"}
+
+# Features src/features.py builds. Add a feature here when you add it.
+ENGINEERED_COLS = {
+    "dayofweek", "is_weekend", "is_holiday", "is_workday",
+    "month_sin", "month_cos",
+    "weather_severity", "weather_severity_lag_1",
+    "cnt_lag_1", "cnt_lag_7", "cnt_roll_7",
+}
+
+# The model's inputs must be exactly these.
+DECLARED_FEATURES = RAW_FEATURE_COLS | ENGINEERED_COLS
+
 # Temporal split: train on 2011, validate on H1 2012, test on H2 2012.
 TRAIN_END = "2011-12-31"
 VALID_END = "2012-06-30"

@@ -3,7 +3,16 @@ import pandas as pd
 import pytest
 from sklearn.metrics import r2_score
 
-from src.config import LAG_WARMUP, TARGET
+from src.config import (
+    DATE_COL,
+    ENCODED_COLS,
+    FORBIDDEN,
+    LAG_WARMUP,
+    RAW,
+    RAW_FEATURE_COLS,
+    REDUNDANT_LABEL_COLS,
+    TARGET,
+)
 from src.features import build_features, feature_columns, reindex_to_calendar
 from src.ingest import load_raw
 from src.train import MODELS, temporal_split
@@ -41,6 +50,35 @@ def test_only_expected_rows_are_dropped(raw, feats):
     allowed_loss = LAG_WARMUP + LAG_WARMUP * missing_days
     lost = len(raw) - len(feats)
     assert lost <= allowed_loss, f"lost {lost} rows; expected at most {allowed_loss}"
+
+
+def test_every_raw_column_is_classified():
+    """Every column in the raw CSV must be classified in src/config.py:
+    forbidden, a declared raw feature, re-encoded, redundant, or the date.
+
+    FORBIDDEN is a denylist, so a new numeric column appended to the data
+    would otherwise flow straight into feature_columns() and the model.
+    The header is read directly, not through load_raw(), so this test
+    names the offending column even if another guard fails first.
+    """
+    raw_cols = set(pd.read_csv(RAW, nrows=0).columns)
+    classified = (
+        FORBIDDEN | RAW_FEATURE_COLS | ENCODED_COLS | REDUNDANT_LABEL_COLS | {DATE_COL}
+    )
+    unclassified = raw_cols - classified
+    assert not unclassified, (
+        f"raw columns not classified in src/config.py: {sorted(unclassified)}. "
+        "Add each to FORBIDDEN (with its reason) or to a feature set."
+    )
+
+
+def test_column_classes_do_not_overlap():
+    """A column cannot be both forbidden and a feature."""
+    sets = [FORBIDDEN, RAW_FEATURE_COLS, ENCODED_COLS, REDUNDANT_LABEL_COLS, {DATE_COL}]
+    seen = set()
+    for s in sets:
+        assert not (seen & s), f"classified twice: {sorted(seen & s)}"
+        seen |= s
 
 
 def test_beats_the_mean_baseline(feats):
