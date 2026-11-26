@@ -67,6 +67,10 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
 
     # --- Weather: measured same-day, available to a forecaster ----------
     out["weather_severity"] = encode_weather(out.weather)
+    # Yesterday's weather, on the calendar index. cnt_lag_1 is depressed
+    # after a bad-weather day; this lets a model tell "demand fell" from
+    # "it rained yesterday". Known at prediction time for d: it is d-1's.
+    out["weather_severity_lag_1"] = out["weather_severity"].shift(1)
 
     # --- Lagged target: past values only. shift(1) is the whole ballgame;
     # without it, cnt_roll_7 would contain today's count. -----------------
