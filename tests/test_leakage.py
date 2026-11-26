@@ -8,7 +8,7 @@ import pandas as pd
 import pytest
 
 from src.config import FORBIDDEN, TARGET
-from src.features import build_features, feature_columns
+from src.features import build_features, encode_weather, feature_columns
 from src.ingest import load_raw
 
 
@@ -55,6 +55,29 @@ def test_rolling_mean_excludes_today(feats):
     if all(d in by_date.index for d in window):
         expected = sum(by_date[d] for d in window) / 7
         assert feats.set_index("dteday").cnt_roll_7[date] == pytest.approx(expected)
+
+
+def test_weather_lag_1_is_yesterdays_weather(feats):
+    """weather_severity_lag_1 on date d is the weather severity of d-1 in
+    calendar days: strictly earlier information only.
+
+    Named date, computed by hand from the raw file: 2011-04-16 was BAD (2),
+    and 2011-04-17 itself was GOOD (0). A feature that read the same day,
+    or a row-shift across the 2011-03-10 gap, gives a different number.
+    """
+    by_date = feats.set_index("dteday")
+    assert by_date.loc[pd.Timestamp("2011-04-17"), "weather_severity_lag_1"] == 2.0
+
+    # The same property on every row whose previous calendar day is in raw.
+    raw = load_raw().set_index("dteday")
+    severity = encode_weather(raw.weather)
+    checked = 0
+    for date, lag in by_date.weather_severity_lag_1.items():
+        prev = date - pd.Timedelta(days=1)
+        if prev in severity.index:
+            assert lag == severity[prev], f"bad weather lag at {date.date()}"
+            checked += 1
+    assert checked > 600, "too few rows actually verified"
 
 
 def test_no_missing_values(feats):
