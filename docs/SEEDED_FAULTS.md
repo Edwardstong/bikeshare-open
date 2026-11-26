@@ -14,6 +14,10 @@ Exercise 2, plus the recorded failing run of the Exercise 1 feature test.
   each seeded edit. The script, matcher and exit code are the repo's own.
 - **`make test`** output is pasted from the real run: the failure summary and
   the counts. Full tracebacks are omitted for length.
+- **Line numbers** in tracebacks (e.g. `tests/test_leakage.py:46`) refer to
+  the test files at each fault's own commit. Later commits added tests above
+  them, so the same fault seeded on the final code prints the same test name
+  and message at a different line, and higher pass counts (21 tests now).
 - **Turns to fix**: each fix was done by a fresh agent with no context. It got
   only the hook's stderr, the repo's permission allowlist (Read/Grep/Glob/Edit,
   plus `make`, `python -m pytest`, `git diff`, `git status`), and a ban on
