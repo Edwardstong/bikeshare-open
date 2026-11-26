@@ -1,0 +1,110 @@
+{
+  "big_move_threshold_rides": 756.0,
+  "valid": {
+    "n_days": 182,
+    "ridge": {
+      "r2": 0.667,
+      "mae": 803.9,
+      "rmse": 991.6,
+      "median_abs_err": 669.8,
+      "mean_err": -479.2
+    },
+    "persistence": {
+      "r2": 0.4507,
+      "mae": 900.6,
+      "rmse": 1273.5,
+      "median_abs_err": 638.5,
+      "mean_err": -17.6
+    },
+    "share_days_ridge_closer": 0.505,
+    "weather_changed": {
+      "n_days": 72,
+      "ridge_mae": 868.5,
+      "persistence_mae": 1254.2,
+      "ridge_mae_other_days": 761.6,
+      "persistence_mae_other_days": 669.1
+    },
+    "big_move": {
+      "n_days": 75,
+      "ridge_mae": 1005.4,
+      "persistence_mae": 1679.4,
+      "ridge_mae_other_days": 662.7,
+      "persistence_mae_other_days": 354.7
+    },
+    "bootstrap": {
+      "mae_diff_ci95": [
+        -222.1,
+        21.1
+      ],
+      "rmse_diff_ci95": [
+        -432.3,
+        -132.6
+      ],
+      "block_days": 7,
+      "n_boot": 2000,
+      "seed": 0
+    }
+  },
+  "test": {
+    "n_days": 184,
+    "ridge": {
+      "r2": 0.6124,
+      "mae": 910.6,
+      "rmse": 1084.0,
+      "median_abs_err": 877.7,
+      "mean_err": -522.6
+    },
+    "persistence": {
+      "r2": 0.5099,
+      "mae": 840.1,
+      "rmse": 1219.0,
+      "median_abs_err": 506.5,
+      "mean_err": 16.1
+    },
+    "share_days_ridge_closer": 0.408,
+    "weather_changed": {
+      "n_days": 67,
+      "ridge_mae": 992.9,
+      "persistence_mae": 1141.2,
+      "ridge_mae_other_days": 863.5,
+      "persistence_mae_other_days": 667.6
+    },
+    "big_move": {
+      "n_days": 70,
+      "ridge_mae": 1095.2,
+      "persistence_mae": 1694.9,
+      "ridge_mae_other_days": 797.3,
+      "persistence_mae_other_days": 315.2
+    },
+    "bootstrap": {
+      "mae_diff_ci95": [
+        -13.2,
+        175.2
+      ],
+      "rmse_diff_ci95": [
+        -235.4,
+        -18.3
+      ],
+      "block_days": 7,
+      "n_boot": 2000,
+      "seed": 0
+    }
+  },
+  "ridge_standardised_coefs": {
+    "cnt_roll_7": 480.7,
+    "cnt_lag_1": 469.6,
+    "weather_severity": -287.6,
+    "atemp": 170.5,
+    "windspeed": -168.6,
+    "hum": -152.5,
+    "weather_severity_lag_1": 121.2,
+    "temp": 86.5,
+    "is_holiday": -60.7,
+    "cnt_lag_7": -29.6,
+    "dayofweek": -27.7,
+    "is_workday": 18.1,
+    "month_sin": -17.1,
+    "is_weekend": 3.9,
+    "month_cos": -3.6
+  }
+}
