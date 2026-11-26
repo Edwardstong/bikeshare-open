@@ -19,6 +19,18 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/require_green.sh",
+            "timeout": 120,
+            "statusMessage": "Running the full suite before stopping..."
+          }
+        ]
+      }
     ]
   },
   "permissions": {

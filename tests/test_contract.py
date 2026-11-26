@@ -10,11 +10,12 @@ from src.config import (
     LAG_WARMUP,
     RAW,
     RAW_FEATURE_COLS,
+    RAW_SHA256,
     REDUNDANT_LABEL_COLS,
     TARGET,
 )
 from src.features import build_features, feature_columns, reindex_to_calendar
-from src.ingest import load_raw
+from src.ingest import load_raw, raw_sha256
 from src.train import MODELS, temporal_split
 
 
@@ -69,6 +70,18 @@ def test_every_raw_column_is_classified():
     assert not unclassified, (
         f"raw columns not classified in src/config.py: {sorted(unclassified)}. "
         "Add each to FORBIDDEN (with its reason) or to a feature set."
+    )
+
+
+def test_raw_file_is_unmodified():
+    """The raw CSV must be byte-identical to the file the results came from.
+
+    Every other test checks structure; a tampered value that keeps
+    casual + registered == cnt passes all of them (docs/SEEDED_FAULTS.md,
+    fault 4: a Bash `cp` into data/raw/ changed the headline silently)."""
+    assert raw_sha256() == RAW_SHA256, (
+        "data/raw/bike_daily.csv has been modified; restore it with "
+        "`git checkout -- data/raw/bike_daily.csv`"
     )
 
 

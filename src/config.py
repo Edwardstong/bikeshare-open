@@ -20,6 +20,12 @@ DATA_URL = (
     "interpretable-ml-book/master/data/bike.csv"
 )
 
+# SHA-256 of the checked-in raw file. Raw data is immutable, but the
+# permission rules only bind the Edit/Write tools: a Bash `cp` walks past
+# them and past the PostToolUse hook. `make data` and the test suite
+# compare against this, so any change to the bytes is loud.
+RAW_SHA256 = "a6bed1577f6e4de56dcfae6d8315985073cc0ad3446c8c99ed60c86a0b5ad9dc"
+
 TARGET = "cnt"
 
 # --- Three reasons a column is kept out of the feature set --------------

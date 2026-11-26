@@ -1,0 +1,4 @@
+# The raw CSV is checked by SHA-256 (src/config.py RAW_SHA256). Never let
+# git rewrite its line endings on checkout, or the hash check fails on a
+# clean clone.
+data/raw/*.csv -text
