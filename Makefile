@@ -1,4 +1,4 @@
-.PHONY: all data features train test clean model check-model
+.PHONY: all data features train test clean model check-model ex4-valid ex4-test compare
 
 # --- The pipeline ----------------------------------------------------------
 all: data features train
@@ -17,6 +17,19 @@ test:
 
 clean:
 	rm -f data/processed/*.parquet reports/metrics.json reports/*.png
+
+# --- Exercises 4 and 5 (not part of `make all`) ------------------------------
+# metrics.json stays the untransformed pipeline; these write elsewhere.
+ex4-valid:
+	for t in ratio logratio diff; do \
+	  python -m src.train --target $$t --splits valid --out reports/exercise4/valid_$$t.json; \
+	done
+
+ex4-test:
+	python -m src.train --target ratio --out reports/exercise4/test_ratio.json
+
+compare:
+	python -m src.compare
 
 # --- The agent model (open weights, local) ----------------------------------
 # Builds `bikeshare-coder`: the base model plus a 64k context window, which
