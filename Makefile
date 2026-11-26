@@ -37,9 +37,12 @@ compare:
 # BASE if your machine has the memory (see README.md).
 BASE ?= qwen3.5:9b
 
+# Ollama 0.40 does not read a Modelfile from stdin (`-f -` fails with "no
+# Modelfile or safetensors files found"), so write it to a temp file.
 model:
 	ollama pull $(BASE)
-	sed "s|^FROM .*|FROM $(BASE)|" model/Modelfile | ollama create bikeshare-coder -f -
+	tmp=$$(mktemp) && sed "s|^FROM .*|FROM $(BASE)|" model/Modelfile > $$tmp && \
+	  ollama create bikeshare-coder -f $$tmp; status=$$?; rm -f $$tmp; exit $$status
 
 check-model:
 	bash model/check.sh
