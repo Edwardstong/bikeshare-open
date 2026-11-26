@@ -117,6 +117,21 @@ def test_weather_lag_1_is_yesterdays_weather(feats):
     assert checked > 600, "too few rows actually verified"
 
 
+def test_encode_weather_fails_loudly_on_unknown_labels():
+    """A weather label outside WEATHER_ORDER must raise, not become a NaN
+    that a later dropna() deletes. The starter suite never fed the encoder
+    an unknown label, so removing the raise left every test green
+    (docs/SEEDED_FAULTS.md, fault 3)."""
+    with pytest.raises(ValueError, match="unmapped weather labels"):
+        encode_weather(pd.Series(["GOOD", "SNOW", "MISTY"]))
+
+    # End to end: one relabelled day must stop the pipeline, not vanish.
+    raw = load_raw()
+    raw.loc[100, "weather"] = "RAINY"
+    with pytest.raises(ValueError, match="unmapped weather labels"):
+        build_features(raw)
+
+
 def test_no_missing_values(feats):
     assert feats[feature_columns(feats)].isna().sum().sum() == 0
 
